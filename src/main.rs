@@ -1,26 +1,25 @@
 use std::env;
 
+use chrono::Utc;
 use iron;
 use iron::prelude::*;
 use iron::status;
 use router::Router;
-use chrono::{Utc};
 
 use reqwest;
 use serde_json;
 
-mod model;
-mod parse;
+mod lib;
 
 static APP_USER_AGENT: &str =
     "Mozilla/5.0 (X11; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0";
 static BASE_WCA_URL: &str = "https://www.worldcubeassociation.org/persons";
 static DEFAULT_PORT: u64 = 8010;
+static PORT_ENV_NAME: &str = "WCA_USERINFO_PORT";
 
 /// get port from environment variable or use default
 fn get_port() -> u64 {
-    let port_envvar = "WCA_USERINFO_PORT";
-    match env::var(port_envvar) {
+    match env::var(PORT_ENV_NAME) {
         Ok(env_port) => match env_port.parse::<u64>() {
             Ok(port_num) => port_num,
             Err(_) => {
@@ -52,8 +51,8 @@ fn controller(req: &mut Request) -> IronResult<Response> {
         .find("wca_id")
         .unwrap_or("/");
     println!("[{}] GET /{}", Utc::now().to_rfc3339(), query);
-    match parse::get_page_contents(&client, &format!("{}/{}", BASE_WCA_URL, query)) {
-        Ok(request_body) => match &parse::parse_html(&request_body) {
+    match lib::get_page_contents(&client, &format!("{}/{}", BASE_WCA_URL, query)) {
+        Ok(request_body) => match &lib::parse_html(&request_body) {
             // request succeeded, parsing succeeded
             Ok(user_info) => Ok(Response::with((
                 status::Ok,
@@ -80,7 +79,7 @@ fn main() {
 
     let port = get_port();
 
-    let _app = Iron::new(router).http(format!("0.0.0.0:{}", port)).unwrap();
+    let _server = Iron::new(router).http(format!("0.0.0.0:{}", port)).unwrap();
     println!("Hosting wca_userinfo server on port: {}", port);
 }
 
