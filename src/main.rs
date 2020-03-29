@@ -4,6 +4,7 @@ use iron;
 use iron::prelude::*;
 use iron::status;
 use router::Router;
+use chrono::{Utc};
 
 use reqwest;
 use serde_json;
@@ -50,6 +51,7 @@ fn controller(req: &mut Request) -> IronResult<Response> {
         .unwrap()
         .find("wca_id")
         .unwrap_or("/");
+    println!("[{}] GET /{}", Utc::now().to_rfc3339(), query);
     match parse::get_page_contents(&client, &format!("{}/{}", BASE_WCA_URL, query)) {
         Ok(request_body) => match &parse::parse_html(&request_body) {
             // request succeeded, parsing succeeded
