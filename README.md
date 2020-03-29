@@ -8,6 +8,8 @@ a week). It's **not** meant to be used to scrape the entire website, you're much
 
 ## Install:
 
+Reqiures: `cargo`
+
 ```sh
 git clone https://github.com/seanbreckenridge/wca_userinfo
 cd wca_userinfo
