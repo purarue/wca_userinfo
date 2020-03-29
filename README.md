@@ -1,12 +1,14 @@
 # wca_userinfo
 
-Tiny webserver that scrapes basic information for a user from
+Tiny webserver that scrapes information for a user from
 [worldcubeassosiation.org](https://www.worldcubeassociation.org/).
 
 This is meant to be used to get information for one user (me) periodically (once
 a week). It's **not** meant to be used to scrape the entire website, you're much better off using the [database dump](https://www.worldcubeassociation.org/results/misc/export.html) for that.
 
 ## Install:
+
+Reqiures: `cargo`
 
 ```sh
 git clone https://github.com/seanbreckenridge/wca_userinfo
@@ -136,5 +138,3 @@ curl --silent "http://localhost:8010/2017BREC02" | jq
   ]
 }
 ```
-
-`
