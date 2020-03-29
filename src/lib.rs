@@ -82,7 +82,7 @@ impl Event {
         }
 
         Ok(Event {
-            name: tr_vec[0].clone(),
+            name: tr_vec[0].to_owned(),
             single: RecordGroup::from_str_values(&tr_vec[4], &tr_vec[1], &tr_vec[2], &tr_vec[3])?,
             average: RecordGroup::from_str_values(&tr_vec[5], &tr_vec[8], &tr_vec[7], &tr_vec[6])?,
         })
@@ -139,28 +139,26 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
     let td_selector = Selector::parse(TD_SELECTOR_STR).unwrap();
 
     // parse user information
-    let user_information: Vec<String> = document
+    let user_information = document
         .select(&person_information_selector)
         .map(|td| {
-            String::from(
-                td.text() // text iterator
-                    .next() // text element
-                    .unwrap_or("")
-                    .trim(), // remove extra space (from icons)
-            )
+            td.text() // text iterator
+                .next() // text element
+                .unwrap_or("")
+                .trim() // remove extra space (from icons)
         })
-        .collect();
+        .collect::<Vec<&str>>();
 
     // make sure that we got information from each td
     for info in &user_information {
-        if info.trim().is_empty() {
+        if info.is_empty() {
             bail!("Parse Error: Did not get user information for one or more items.")
         }
     }
 
     // make sure we got the correct amount of items
     if user_information.len() != EXPECT_USER_INFO_TDS {
-        bail!(format!("Parse Error: Didn't find expected amount of td's as user information. Expected {}, found {}", EXPECT_USER_INFO_TDS, user_information.len()))
+        bail!("Parse Error: Didn't find expected amount of td's as user information. Expected {}, found {}", EXPECT_USER_INFO_TDS, user_information.len())
     }
 
     // parse event records
@@ -170,9 +168,7 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
         tr.select(&td_selector).map( // for each td (item in row)
             |td|
             // iterate and join child text nodes
-            String::from(
-                td.text().collect::<Vec<&str>>().join("").trim()
-            )
+            td.text().collect::<Vec<&str>>().join("").trim().to_owned()
         ).collect::<Vec<String>>())
         .map(|tr_vec| // convert vec to events
         Event::from_tr_vector(&tr_vec))
