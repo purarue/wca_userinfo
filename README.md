@@ -1,6 +1,6 @@
 # wca_userinfo
 
-Tiny webserver that scrapes basic information for a user from
+Tiny webserver that scrapes information for a user from
 [worldcubeassosiation.org](https://www.worldcubeassociation.org/).
 
 This is meant to be used to get information for one user (me) periodically (once
@@ -136,5 +136,3 @@ curl --silent "http://localhost:8010/2017BREC02" | jq
   ]
 }
 ```
-
-`
