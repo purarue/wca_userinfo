@@ -29,7 +29,7 @@ The `WCA_USERINFO_PORT` can be set to change which port this is hosted on.
 ./target/release/wca_userinfo
 ```
 
-... or `WCA_USERINFO_PORT=8050 ./run_server.sh`
+... or `WCA_USERINFO_PORT=8050 ./run_server`
 
 ## Example
 
