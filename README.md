@@ -11,7 +11,7 @@ a week). It's **not** meant to be used to scrape the entire website, you're much
 Reqiures: `cargo`
 
 ```sh
-git clone https://gitlab.com/seanbreckenridge/wca_userinfo
+git clone https://github.com/seanbreckenridge/wca_userinfo
 cd wca_userinfo
 cargo build --bins --release
 ```
