@@ -1,13 +1,10 @@
 use std::env;
+use std::process::exit;
 
 use chrono::Utc;
-use iron;
 use iron::prelude::*;
 use iron::status;
 use router::Router;
-
-use reqwest;
-use serde_json;
 
 mod lib;
 
@@ -34,8 +31,13 @@ fn get_port() -> u64 {
     }
 }
 
-/// controller for all /wca_id endpoint
-fn controller(req: &mut Request) -> IronResult<Response> {
+struct WcaResponse {
+    json_string: String,
+    succeeded: bool,
+}
+
+/// Request data for this user and serialize it to JSON
+fn request_json_data(wca_id: &str) -> WcaResponse {
     // request::get makes client implicitly, this creates it explicitly
     // so that we set the user agent.
     // could used a arc/mutex to share across requests, but the performance
@@ -44,6 +46,34 @@ fn controller(req: &mut Request) -> IronResult<Response> {
         .user_agent(APP_USER_AGENT)
         .build()
         .unwrap();
+    match lib::get_page_contents(&client, &format!("{}/{}", BASE_WCA_URL, wca_id)) {
+        Ok(request_body) => match &lib::parse_html(&request_body) {
+            Ok(user_info) => WcaResponse {
+                json_string: serde_json::to_string(user_info).unwrap(),
+                succeeded: true,
+            },
+            // request succeeded, parsing failed
+            Err(parse_err) => WcaResponse {
+                json_string: serde_json::to_string(&serde_json::json!({
+                    "error": format!("{}", parse_err)
+                }))
+                .unwrap(),
+                succeeded: false,
+            },
+        },
+        // request failed
+        Err(req_err) => WcaResponse {
+            json_string: serde_json::to_string(&serde_json::json!({
+                "error": format!("{}", req_err)
+            }))
+            .unwrap(),
+            succeeded: false,
+        },
+    }
+}
+
+/// controller for all /wca_id endpoint
+fn controller(req: &mut Request) -> IronResult<Response> {
     let query = req
         .extensions
         .get::<Router>()
@@ -51,29 +81,15 @@ fn controller(req: &mut Request) -> IronResult<Response> {
         .find("wca_id")
         .unwrap_or("/");
     println!("[{}] GET /{}", Utc::now().to_rfc3339(), query);
-    match lib::get_page_contents(&client, &format!("{}/{}", BASE_WCA_URL, query)) {
-        Ok(request_body) => match &lib::parse_html(&request_body) {
-            // request succeeded, parsing succeeded
-            Ok(user_info) => Ok(Response::with((
-                status::Ok,
-                serde_json::to_string(user_info).unwrap(),
-            ))),
-            // request succeeded, parsing failed
-            Err(parse_err) => Ok(Response::with((
-                status::BadRequest,
-                serde_json::to_string(&serde_json::json!({ "error": format!("{}", parse_err) }))
-                    .unwrap(),
-            ))),
-        },
-        // request failed
-        Err(req_err) => Ok(Response::with((
-            status::BadRequest,
-            serde_json::to_string(&serde_json::json!({ "error": format!("{}", req_err) })).unwrap(),
-        ))),
-    }
+    let res = request_json_data(query);
+    let status = match res.succeeded {
+        true => status::Ok,
+        false => status::BadRequest,
+    };
+    Ok(Response::with((status, res.json_string)))
 }
 
-fn main() {
+fn server() {
     let mut router = Router::new();
     router.get("/:wca_id", controller, "wca_id");
 
@@ -81,6 +97,26 @@ fn main() {
 
     let _server = Iron::new(router).http(format!("0.0.0.0:{}", port)).unwrap();
     println!("Hosting wca_userinfo server on port: {}", port);
+}
+
+fn main() {
+    let args: Vec<String> = env::args().skip(1).collect();
+    match args.len() {
+        1 => match args[0].as_str() {
+            "server" => server(),
+            wca_id => {
+                let res = request_json_data(wca_id);
+                println!("{}", res.json_string);
+                if !res.succeeded {
+                    exit(1)
+                }
+            }
+        },
+        _ => {
+            eprintln!("Wrong number of arguments. Provide one -- either 'server' or a WCA User ID to get data for");
+            exit(1);
+        }
+    }
 }
 
 //  ispell

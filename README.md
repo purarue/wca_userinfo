@@ -14,6 +14,8 @@ Reqiures: `cargo`
 git clone https://github.com/seanbreckenridge/wca_userinfo
 cd wca_userinfo
 cargo build --bins --release
+# or, to install globally
+cargo install --path .
 ```
 
 You can copy the `./target/release/wca_info` binary to anywhere you wish, that
@@ -33,7 +35,9 @@ The `WCA_USERINFO_PORT` can be set to change which port this is hosted on.
 
 ## Example
 
-Provide the WCA user ID as the path:
+You can supply the user ID as the first argument: `wca_userinfo 2017BREC02` to just grab info for a user and then exit
+
+For the server, provide the WCA user ID as the path:
 
 ``` sh
 # for https://www.worldcubeassociation.org/persons/2017BREC02

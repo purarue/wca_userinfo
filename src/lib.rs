@@ -1,6 +1,5 @@
 use std::error::Error;
 
-use reqwest;
 use scraper::{Html, Selector};
 use serde::Serialize;
 use simple_error::bail;
@@ -58,9 +57,9 @@ impl RecordGroup {
     ) -> ParseResult<RecordGroup> {
         Ok(RecordGroup {
             time: parse_time(&String::from(time)),
-            national: parse_int(&national)?,
-            continent: parse_int(&continent)?,
-            world: parse_int(&world)?,
+            national: parse_int(national)?,
+            continent: parse_int(continent)?,
+            world: parse_int(world)?,
         })
     }
 }
@@ -131,7 +130,7 @@ pub fn get_page_contents(
 
 /// parses the HTML page into a UserInfo struct
 pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
-    let document = Html::parse_document(&body);
+    let document = Html::parse_document(body);
 
     // selectors
     let person_information_selector = Selector::parse(PERSON_INFORMATION_SELECTOR_STR).unwrap();
@@ -182,10 +181,10 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
     Ok(UserInfo {
         country: user_information[0].to_owned(),
         wca_id: user_information[1].to_owned(),
-        gender: Gender::from_string(&user_information[2]),
+        gender: Gender::from_string(user_information[2]),
         // safe to unwrap since we checked length of strings/validated above
-        competitions: parse_int(&user_information[3])?.unwrap(),
-        completed_solves: parse_int(&user_information[4])?.unwrap(),
+        competitions: parse_int(user_information[3])?.unwrap(),
+        completed_solves: parse_int(user_information[4])?.unwrap(),
         events: event_trs.ok().unwrap(),
     })
 }
