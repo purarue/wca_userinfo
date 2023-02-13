@@ -27,7 +27,7 @@ Default port is `8010`.
 
 The `WCA_USERINFO_PORT` can be set to change which port this is hosted on.
 
-``` sh
+```sh
 ./target/release/wca_userinfo
 ```
 
@@ -39,7 +39,7 @@ You can supply the user ID as the first argument: `wca_userinfo 2017BREC02` to j
 
 For the server, provide the WCA user ID as the path:
 
-``` sh
+```sh
 # for https://www.worldcubeassociation.org/persons/2017BREC02
 curl --silent "http://localhost:8010/2017BREC02" | jq
 {

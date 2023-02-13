@@ -5,7 +5,6 @@ authors = ["Sean Breckenridge <seanbrecke@gmail.com>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 iron = "0.6.*"
 router = "0.6.0"
