@@ -6,7 +6,6 @@ use simple_error::bail;
 
 pub type ParseResult<T> = Result<T, Box<dyn Error>>;
 
-static EXPECT_USER_INFO_TDS: usize = 5;
 static EXPECT_EVENT_TDS: usize = 10;
 
 // CSS selectors
@@ -110,7 +109,7 @@ impl Gender {
 pub struct UserInfo {
     pub country: String,
     pub wca_id: String,
-    pub gender: Gender,
+    pub gender: Option<Gender>,
     pub competitions: u32,
     pub completed_solves: u32,
     pub events: Vec<Event>,
@@ -138,7 +137,7 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
     let td_selector = Selector::parse(TD_SELECTOR_STR).unwrap();
 
     // parse user information
-    let user_information = document
+    let mut user_information = document
         .select(&person_information_selector)
         .map(|td| {
             td.text() // text iterator
@@ -156,8 +155,9 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
     }
 
     // make sure we got the correct amount of items
-    if user_information.len() != EXPECT_USER_INFO_TDS {
-        bail!("Parse Error: Didn't find expected amount of td's as user information. Expected {}, found {}", EXPECT_USER_INFO_TDS, user_information.len())
+    // if gender is missing, there is no td for it
+    if user_information.len() < 4 || user_information.len() > 5 {
+        bail!("Parse Error: Didn't find expected amount of td's as user information. Expected 4 or 5, found {}", user_information.len())
     }
 
     // parse event records
@@ -178,13 +178,18 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
         return Err(e);
     };
 
+    let gender: Option<Gender> = match user_information.len() {
+        5 => Some(Gender::from_string(&user_information.remove(2))),
+        _ => None,
+    };
+
     Ok(UserInfo {
         country: user_information[0].to_owned(),
         wca_id: user_information[1].to_owned(),
-        gender: Gender::from_string(user_information[2]),
+        gender,
         // safe to unwrap since we checked length of strings/validated above
-        competitions: parse_int(user_information[3])?.unwrap(),
-        completed_solves: parse_int(user_information[4])?.unwrap(),
+        competitions: parse_int(user_information[2])?.unwrap(),
+        completed_solves: parse_int(user_information[3])?.unwrap(),
         events: event_trs.ok().unwrap(),
     })
 }
