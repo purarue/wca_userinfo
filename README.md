@@ -35,108 +35,138 @@ The `WCA_USERINFO_PORT` can be set to change which port this is hosted on.
 
 ## Example
 
-You can supply the user ID as the first argument: `wca_userinfo 2017BREC02` to just grab info for a user and then exit
+You can supply the user ID as the first argument: `wca_userinfo 2012PARK03` to just grab info for a user and then exit
 
 For the server, provide the WCA user ID as the path:
 
 ```sh
-# for https://www.worldcubeassociation.org/persons/2017BREC02
-curl --silent "http://localhost:8010/2017BREC02" | jq
+# for https://www.worldcubeassociation.org/persons/2012PARK03
+$ curl --silent "http://localhost:8010/2012PARK03" | jq
 {
   "country": "United States",
-  "wca_id": "2017BREC02",
+  "wca_id": "2012PARK03",
   "gender": "Male",
-  "competitions": 4,
-  "completed_solves": 59,
+  "competitions": 185,
+  "completed_solves": 6745,
   "events": [
     {
       "name": "3x3x3 Cube",
       "single": {
-        "time": "13.22",
-        "national": 3512,
-        "continent": 4880,
-        "world": 21046
+        "time": "3.13",
+        "national": 1,
+        "continent": 1,
+        "world": 1
       },
       "average": {
-        "time": "16.70",
-        "national": 4055,
-        "continent": 5622,
-        "world": 24396
+        "time": "4.86",
+        "national": 1,
+        "continent": 1,
+        "world": 5
       }
     },
     {
       "name": "2x2x2 Cube",
       "single": {
-        "time": "5.75",
-        "national": 7933,
-        "continent": 10933,
-        "world": 40840
+        "time": "2.88",
+        "national": 3978,
+        "continent": 5211,
+        "world": 18505
       },
       "average": {
-        "time": "6.65",
-        "national": 5415,
-        "continent": 7492,
-        "world": 28038
+        "time": "4.31",
+        "national": 3115,
+        "continent": 4017,
+        "world": 14205
       }
     },
     {
       "name": "4x4x4 Cube",
       "single": {
-        "time": "1:46.07",
-        "national": 5684,
-        "continent": 7908,
-        "world": 30942
+        "time": "15.71",
+        "national": 1,
+        "continent": 1,
+        "world": 1
       },
       "average": {
-        "time": null,
-        "national": null,
-        "continent": null,
-        "world": null
+        "time": "19.38",
+        "national": 1,
+        "continent": 1,
+        "world": 1
+      }
+    },
+    {
+      "name": "5x5x5 Cube",
+      "single": {
+        "time": "32.52",
+        "national": 1,
+        "continent": 1,
+        "world": 2
+      },
+      "average": {
+        "time": "34.76",
+        "national": 1,
+        "continent": 1,
+        "world": 1
+      }
+    },
+    {
+      "name": "6x6x6 Cube",
+      "single": {
+        "time": "58.03",
+        "national": 1,
+        "continent": 1,
+        "world": 1
+      },
+      "average": {
+        "time": "1:05.66",
+        "national": 1,
+        "continent": 1,
+        "world": 1
+      }
+    },
+    {
+      "name": "7x7x7 Cube",
+      "single": {
+        "time": "1:34.15",
+        "national": 1,
+        "continent": 1,
+        "world": 1
+      },
+      "average": {
+        "time": "1:39.68",
+        "national": 1,
+        "continent": 1,
+        "world": 1
       }
     },
     {
       "name": "3x3x3 One-Handed",
       "single": {
-        "time": "30.44",
-        "national": 2644,
-        "continent": 3942,
-        "world": 17675
+        "time": "6.20",
+        "national": 1,
+        "continent": 1,
+        "world": 3
       },
       "average": {
-        "time": "33.06",
-        "national": 2045,
-        "continent": 3055,
-        "world": 14093
+        "time": "8.62",
+        "national": 1,
+        "continent": 1,
+        "world": 5
       }
     },
     {
-      "name": "Pyraminx",
+      "name": "Square-1",
       "single": {
-        "time": "15.21",
-        "national": 9576,
-        "continent": 12883,
-        "world": 48183
+        "time": "52.69",
+        "national": 4216,
+        "continent": 5253,
+        "world": 16053
       },
       "average": {
-        "time": "18.71",
-        "national": 8524,
-        "continent": 11494,
-        "world": 42674
-      }
-    },
-    {
-      "name": "Skewb",
-      "single": {
-        "time": "7.94",
-        "national": 2663,
-        "continent": 3571,
-        "world": 12845
-      },
-      "average": {
-        "time": "15.34",
-        "national": 4079,
-        "continent": 5410,
-        "world": 18359
+        "time": "1:10.20",
+        "national": 3713,
+        "continent": 4648,
+        "world": 14204
       }
     }
   ]
