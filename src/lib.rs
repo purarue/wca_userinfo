@@ -109,7 +109,7 @@ impl Gender {
 pub struct UserInfo {
     pub country: String,
     pub wca_id: String,
-    pub gender: Option<Gender>,
+    pub gender: Gender,
     pub competitions: u32,
     pub completed_solves: u32,
     pub events: Vec<Event>,
@@ -178,9 +178,9 @@ pub fn parse_html(body: &str) -> ParseResult<UserInfo> {
         return Err(e);
     };
 
-    let gender: Option<Gender> = match user_information.len() {
-        5 => Some(Gender::from_string(&user_information.remove(2))),
-        _ => None,
+    let gender: Gender = match user_information.len() {
+        5 => Gender::from_string(&user_information.remove(2)),
+        _ => Gender::Other,
     };
 
     Ok(UserInfo {
